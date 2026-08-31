@@ -98,22 +98,8 @@
             position: relative;
             box-sizing: border-box;
             border: 2px dashed #94a3b8;
-        }
-
-        /* رسومات كرتونية خلفية داخلية مضمنة تظهر فوراً بجودة عالية */
-        .cartoon-bg {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            opacity: 0.18;
-            z-index: 1;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .cartoon-bg svg {
-            width: 80mm;
-            height: 45mm;
+            background-size: cover;
+            background-position: center;
         }
 
         .content {
@@ -196,6 +182,11 @@
         <input type="file" id="imageUpload" accept="image/*" style="display: none;">
     </div>
     <div class="control-group">
+        <label>خلفية الاستيكرات (يدوياً):</label>
+        <label for="bgUpload" class="file-btn" style="background: #7c3aed;">🖼️ اختر خلفية كرتونية</label>
+        <input type="file" id="bgUpload" accept="image/*" style="display: none;">
+    </div>
+    <div class="control-group">
         <label>نوع الخط:</label>
         <select id="fontFamily" onchange="updateStyles()">
             <option value="'Cairo', sans-serif">Cairo (عصري)</option>
@@ -226,56 +217,25 @@
 <div class="page" id="stickersContainer"></div>
 
 <script>
-    // تصميمات خلفيات كرتونية وأشكال مبهجة مصممة داخليةً (لا تعتمد على صور خارجية)
-    const stickersData = [
-        { 
-          bg: 'linear-gradient(135deg, #FF6B6B, #FF8E53)', 
-          svg: '<svg viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 68,55 79,85 50,70 21,85 32,55 5,35 39,35" fill="#fff"/></svg>' 
-        }, // نجوم كرتونية
-        { 
-          bg: 'linear-gradient(135deg, #4E65FF, #92EFFD)', 
-          svg: '<svg viewBox="0 0 100 100"><circle cx="30" cy="40" r="20" fill="#fff"/><circle cx="70" cy="60" r="25" fill="#fff"/></svg>' 
-        }, // سحب كرتونية
-        { 
-          bg: 'linear-gradient(135deg, #11998e, #38ef7d)', 
-          svg: '<svg viewBox="0 0 100 100"><path d="M50,20 C30,0 0,30 30,60 L50,85 L70,60 C100,30 70,0 50,20 Z" fill="#fff"/></svg>' 
-        }, // قلوب مبهجة
-        { 
-          bg: 'linear-gradient(135deg, #F2994A, #F2C94C)', 
-          svg: '<svg viewBox="0 0 100 100"><rect x="25" y="25" width="50" height="50" rx="10" fill="#fff"/><circle cx="50" cy="50" r="15" fill="#F2994A"/></svg>' 
-        }, // مربعات ألعاب
-        { 
-          bg: 'linear-gradient(135deg, #8A2387, #E94057, #F27121)', 
-          svg: '<svg viewBox="0 0 100 100"><path d="M20,80 Q50,10 80,80 Z" fill="#fff"/></svg>' 
-        }, // أشكال هندسية طفولية
-        { 
-          bg: 'linear-gradient(135deg, #00c6ff, #0072ff)', 
-          svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="none" stroke="#fff" stroke-width="8"/><circle cx="50" cy="50" r="15" fill="#fff"/></svg>' 
-        }, // دوائر وأهداف
-        { 
-          bg: 'linear-gradient(135deg, #f7ff00, #db36a4)', 
-          svg: '<svg viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="#fff"/></svg>' 
-        }, // مثلثات مضحكة
-        { 
-          bg: 'linear-gradient(135deg, #0ba360, #3cba92)', 
-          svg: '<svg viewBox="0 0 100 100"><circle cx="30" cy="50" r="15" fill="#fff"/><circle cx="70" cy="50" r="15" fill="#fff"/><rect x="40" y="35" width="20" height="30" fill="#fff"/></svg>' 
-        }, // أيقونات كرتونية
-        { 
-          bg: 'linear-gradient(135deg, #FF416C, #FF4B2B)', 
-          svg: '<svg viewBox="0 0 100 100"><path d="M20,50 Q50,20 80,50 Q50,80 20,50 Z" fill="#fff"/></svg>' 
-        }, // فقاعات مرحة
-        { 
-          bg: 'linear-gradient(135deg, #7F00FF, #E100FF)', 
-          svg: '<svg viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 68,55 79,85 50,70 21,85 32,55 5,35 39,35" fill="#fff"/></svg>' 
-        }  // نجوم
+    // تدرجات ألوان افتراضية مبهجة
+    const defaultBgs = [
+        'linear-gradient(135deg, #FF6B6B, #FF8E53)',
+        'linear-gradient(135deg, #4E65FF, #92EFFD)',
+        'linear-gradient(135deg, #11998e, #38ef7d)',
+        'linear-gradient(135deg, #F2994A, #F2C94C)',
+        'linear-gradient(135deg, #8A2387, #E94057, #F27121)',
+        'linear-gradient(135deg, #00c6ff, #0072ff)',
+        'linear-gradient(135deg, #f7ff00, #db36a4)',
+        'linear-gradient(135deg, #0ba360, #3cba92)',
+        'linear-gradient(135deg, #FF416C, #FF4B2B)',
+        'linear-gradient(135deg, #7F00FF, #E100FF)'
     ];
 
     const container = document.getElementById('stickersContainer');
 
-    stickersData.forEach((item) => {
+    defaultBgs.forEach((bg) => {
         container.innerHTML += `
-            <div class="sticker" style="background: ${item.bg};">
-                <div class="cartoon-bg">${item.svg}</div>
+            <div class="sticker" style="background: ${bg};">
                 <div class="content">
                     <div class="avatar-container">
                         <img class="child-avatar" src="https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=400&q=80" alt="صورة الطفل">
@@ -317,14 +277,31 @@
         });
     }
 
+    // رفع صورة الطفل
     document.getElementById('imageUpload').addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const imageUrl = e.target.result;
                 document.querySelectorAll('.child-avatar').forEach(img => {
-                    img.src = imageUrl;
+                    img.src = e.target.result;
+                });
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // رفع الخلفية يدوياً لتتطبق على جميع الاستيكرات
+    document.getElementById('bgUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const bgUrl = e.target.result;
+                document.querySelectorAll('.sticker').forEach(sticker => {
+                    sticker.style.background = `url("${bgUrl}")`;
+                    sticker.style.backgroundSize = 'cover';
+                    sticker.style.backgroundPosition = 'center';
                 });
             }
             reader.readAsDataURL(file);
