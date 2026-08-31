@@ -213,25 +213,25 @@
 <div class="page" id="stickersContainer"></div>
 
 <script>
-    // 10 خلفيات كرتونية ومبهجة مختلفة لكل استيكر
+    // 10 خلفيات ملونة وتدرجات كرتونية مبهجة ومختلفة لكل استيكر تظهر فوراً
     const stickersData = [
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80")' }, // ألوان مائية كرتونية
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=600&q=80")' }, // عالم فني ملون
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80")' }, // ألوان الطيف المبهجة
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80")' }, // أجواء ألعاب الفيديو
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80")' }, // أشكال كرتونية مبهجة
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80")' }, // طابع الفضاء الملون
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=600&q=80")' }, // خلفية تكنولوجية كرتونية
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=600&q=80")' }, // عالم الخيال والمغامرة
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=600&q=80")' }, // طابع الأبطال والألعاب
-        { bg: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=600&q=80")' }  // نجوم وألوان مبهجة
+        { bg: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)' }, // أزرق ملكي
+        { bg: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }, // بنفسجي روبلوكس
+        { bg: 'linear-gradient(135deg, #09090b 0%, #3f3f46 100%)' }, // فضاء داكن نجومي
+        { bg: 'linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)' }, // أحمر برشلونة قوية
+        { bg: 'linear-gradient(135deg, #047857 0%, #10b981 100%)' }, // أخضر مبهج
+        { bg: 'linear-gradient(135deg, #c2410c 0%, #f97316 100%)' }, // برتقالي ساطع
+        { bg: 'linear-gradient(135deg, #4f46e5 0%, #818cf8 100%)' }, // أزرق ناصع
+        { bg: 'linear-gradient(135deg, #be185d 0%, #ec4899 100%)' }, // وردي كرتوني
+        { bg: 'linear-gradient(135deg, #854d0e 0%, #eab308 100%)' }, // أصفر ذهبي
+        { bg: 'linear-gradient(135deg, #312e81 0%, #4338ca 100%)' }  // كحلي غامق
     ];
 
     const container = document.getElementById('stickersContainer');
 
     stickersData.forEach((item) => {
         container.innerHTML += `
-            <div class="sticker" style="background-image: ${item.bg};">
+            <div class="sticker" style="background: ${item.bg};">
                 <div class="content">
                     <div class="avatar-container">
                         <img class="child-avatar" src="https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=400&q=80" alt="صورة الطفل">
