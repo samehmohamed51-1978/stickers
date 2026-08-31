@@ -42,6 +42,17 @@
             font-weight: bold;
             color: #94a3b8;
         }
+        .checkbox-group {
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
         input[type="text"], select, input[type="color"], input[type="range"] {
             padding: 8px 12px;
             border: 1px solid #475569;
@@ -121,6 +132,7 @@
             overflow: hidden;
             background: #ffffff;
             flex-shrink: 0;
+            transition: all 0.3s ease;
         }
         
         .avatar-container img {
@@ -214,6 +226,10 @@
         <label>لون خلفية شارة الفصل:</label>
         <input type="color" id="gradeBgColor" value="#fef08a" onchange="updateStyles()">
     </div>
+    <div class="control-group checkbox-group" style="grid-column: span 2;">
+        <input type="checkbox" id="showAvatarToggle" checked onchange="updateStyles()">
+        <label for="showAvatarToggle" style="color: #f8fafc; font-size: 14px; cursor: pointer;">إظهار مكان وصورة الطفل</label>
+    </div>
     <button class="print-btn" onclick="window.print()">🖨️ طباعة لوحة الاستيكرات (A4)</button>
 </div>
 
@@ -239,7 +255,7 @@
         container.innerHTML += `
             <div class="sticker" style="background: ${bg};">
                 <div class="content">
-                    <div class="avatar-container">
+                    <div class="avatar-container target-avatar-box">
                         <img class="child-avatar" src="https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=400&q=80" alt="صورة الطفل">
                     </div>
                     <div class="text-box">
@@ -260,10 +276,26 @@
         const gradeSizeVal = document.getElementById('gradeSize').value;
         const colorVal = document.getElementById('nameColor').value;
         const gradeBgVal = document.getElementById('gradeBgColor').value;
+        const showAvatar = document.getElementById('showAvatarToggle').checked;
 
         document.getElementById('nameSizeVal').textContent = nameSizeVal;
         document.getElementById('strokeSizeVal').textContent = strokeSizeVal;
         document.getElementById('gradeSizeVal').textContent = gradeSizeVal;
+
+        // إخفاء أو إظهار صندوق الصورة
+        document.querySelectorAll('.target-avatar-box').forEach(el => {
+            if (showAvatar) {
+                el.style.display = 'block';
+                el.style.width = '38mm';
+                el.style.opacity = '1';
+                el.style.marginRight = '0';
+            } else {
+                el.style.display = 'none';
+                el.style.width = '0';
+                el.style.opacity = '0';
+                el.style.marginRight = '0';
+            }
+        });
 
         document.querySelectorAll('.target-name').forEach(el => {
             el.textContent = nameVal;
@@ -271,7 +303,6 @@
             el.style.fontSize = nameSizeVal + 'pt';
             el.style.color = colorVal;
             
-            // تطبيق الحدود البيضاء (أو إزالتها إذا كان السمك 0)
             if (strokeSizeVal > 0) {
                 el.style.textShadow = `
                     -${strokeSizeVal}px -${strokeSizeVal}px 0 #000,
@@ -316,6 +347,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const bgUrl = e.target.result;
+                document.querySelectorAll('.sticker').hasBg = true;
                 document.querySelectorAll('.sticker').forEach(sticker => {
                     sticker.style.background = `url("${bgUrl}")`;
                     sticker.style.backgroundSize = 'cover';
