@@ -149,6 +149,8 @@
             flex-direction: column;
             justify-content: center;
             gap: 6px;
+            transform-origin: center;
+            transition: transform 0.1s;
         }
 
         .student-name {
@@ -197,7 +199,7 @@
         <select id="fontFamily" onchange="updateStyles()">
             <option value="'Cairo', sans-serif">Cairo (عصري)</option>
             <option value="'Tajawal', sans-serif">Tajawal (رسمي)</option>
-            <option value="'Changa', sans-serif">Changa (عريض)</option>
+            <option value="'Changa', sans-serif" selected>Changa (عريض - ممتاز للرياضة)</option>
             <option value="'Amiri', serif">Amiri (تقليدي)</option>
         </select>
     </div>
@@ -212,6 +214,10 @@
     <div class="control-group">
         <label>حجم خط الفصل: <span id="gradeSizeVal">10</span>pt</label>
         <input type="range" id="gradeSize" min="8" max="16" value="10" oninput="updateStyles()">
+    </div>
+    <div class="control-group">
+        <label>درجة ميلان النصوص: <span id="skewVal">-10</span>°</label>
+        <input type="range" id="textSkew" min="-30" max="30" value="-10" oninput="updateStyles()">
     </div>
     <div class="control-group">
         <label>لون خط الاسم الداخلي:</label>
@@ -274,7 +280,6 @@
 
     const container = document.getElementById('stickersContainer');
 
-    // إنشاء الـ 10 استيكرات وتوزيعها في 5 أزواج
     defaultBgs.forEach((bg, index) => {
         container.innerHTML += `
             <div class="sticker target-sticker" data-index="${index}" style="background: ${bg};">
@@ -282,7 +287,7 @@
                     <div class="avatar-container target-avatar-box">
                         <img class="child-avatar" src="https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=400&q=80" alt="صورة الطفل">
                     </div>
-                    <div class="text-box">
+                    <div class="text-box target-textbox">
                         <div class="student-name target-name">MOHAMED SAMEH</div>
                         <div class="grade-badge target-grade">G 4B</div>
                     </div>
@@ -298,6 +303,7 @@
         const nameSizeVal = document.getElementById('nameSize').value;
         const strokeSizeVal = document.getElementById('strokeSize').value;
         const gradeSizeVal = document.getElementById('gradeSize').value;
+        const skewVal = document.getElementById('textSkew').value;
         const colorVal = document.getElementById('nameColor').value;
         const gradeBgVal = document.getElementById('gradeBgColor').value;
         const showAvatar = document.getElementById('showAvatarToggle').checked;
@@ -305,6 +311,7 @@
         document.getElementById('nameSizeVal').textContent = nameSizeVal;
         document.getElementById('strokeSizeVal').textContent = strokeSizeVal;
         document.getElementById('gradeSizeVal').textContent = gradeSizeVal;
+        document.getElementById('skewVal').textContent = skewVal;
 
         document.querySelectorAll('.target-avatar-box').forEach(el => {
             if (showAvatar) {
@@ -318,6 +325,11 @@
                 el.style.opacity = '0';
                 el.style.marginRight = '0';
             }
+        });
+
+        // تطبيق الميلان على صندوق النصوص بالكامل (الاسم والفصل معاً)
+        document.querySelectorAll('.target-textbox').forEach(el => {
+            el.style.transform = `skewX(${skewVal}deg)`;
         });
 
         document.querySelectorAll('.target-name').forEach(el => {
@@ -351,7 +363,6 @@
         });
     }
 
-    // دالة لتغيير خلفية كل زوج استيكرات لوحده (كل زر يتحكم في استيكرين معا)
     function changePairBg(pairIndex, event) {
         const file = event.target.files[0];
         if (file) {
@@ -361,7 +372,6 @@
                 const startIndex = pairIndex * 2;
                 const stickers = document.querySelectorAll('.target-sticker');
                 
-                // تطبيق الخلفية على الاستيكرين المرتبطين بهذا الزوج فقط
                 for (let i = startIndex; i < startIndex + 2 && i < stickers.length; i++) {
                     stickers[i].style.background = `url("${bgUrl}")`;
                     stickers[i].style.backgroundSize = 'cover';
