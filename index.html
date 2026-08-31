@@ -188,14 +188,9 @@
         <input type="text" id="gradeInput" value="G 4B" oninput="updateStyles()">
     </div>
     <div class="control-group">
-        <label>صورة الطفل الشخصية:</label>
+        <label>صورة الطفل الشخصية العامة:</label>
         <label for="imageUpload" class="file-btn">📁 اختر صورة الطفل</label>
         <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-    </div>
-    <div class="control-group">
-        <label>خلفية الاستيكرات:</label>
-        <label for="bgUpload" class="file-btn" style="background: #7c3aed;">🖼️ اختر خلفية كرتونية</label>
-        <input type="file" id="bgUpload" accept="image/*" style="display: none;">
     </div>
     <div class="control-group">
         <label>نوع الخط:</label>
@@ -230,6 +225,34 @@
         <input type="checkbox" id="showAvatarToggle" checked onchange="updateStyles()">
         <label for="showAvatarToggle" style="color: #f8fafc; font-size: 14px; cursor: pointer;">إظهار مكان وصورة الطفل</label>
     </div>
+
+    <!-- أزرار تغيير خلفية كل زوج (كل سطر مكون من 2 استيكر) على حدة -->
+    <div class="control-group">
+        <label>خلفية الزوج 1 (الاستيكر 1 و 2):</label>
+        <label for="bgUpload0" class="file-btn" style="background: #7c3aed;">🖼️ اختر خلفية (1)</label>
+        <input type="file" id="bgUpload0" accept="image/*" style="display: none;" onchange="changePairBg(0, event)">
+    </div>
+    <div class="control-group">
+        <label>خلفية الزوج 2 (الاستيكر 3 و 4):</label>
+        <label for="bgUpload1" class="file-btn" style="background: #7c3aed;">🖼️ اختر خلفية (2)</label>
+        <input type="file" id="bgUpload1" accept="image/*" style="display: none;" onchange="changePairBg(1, event)">
+    </div>
+    <div class="control-group">
+        <label>خلفية الزوج 3 (الاستيكر 5 و 6):</label>
+        <label for="bgUpload2" class="file-btn" style="background: #7c3aed;">🖼️ اختر خلفية (3)</label>
+        <input type="file" id="bgUpload2" accept="image/*" style="display: none;" onchange="changePairBg(2, event)">
+    </div>
+    <div class="control-group">
+        <label>خلفية الزوج 4 (الاستيكر 7 و 8):</label>
+        <label for="bgUpload3" class="file-btn" style="background: #7c3aed;">🖼️ اختر خلفية (4)</label>
+        <input type="file" id="bgUpload3" accept="image/*" style="display: none;" onchange="changePairBg(3, event)">
+    </div>
+    <div class="control-group">
+        <label>خلفية الزوج 5 (الاستيكر 9 و 10):</label>
+        <label for="bgUpload4" class="file-btn" style="background: #7c3aed;">🖼️ اختر خلفية (5)</label>
+        <input type="file" id="bgUpload4" accept="image/*" style="display: none;" onchange="changePairBg(4, event)">
+    </div>
+
     <button class="print-btn" onclick="window.print()">🖨️ طباعة لوحة الاستيكرات (A4)</button>
 </div>
 
@@ -251,9 +274,10 @@
 
     const container = document.getElementById('stickersContainer');
 
-    defaultBgs.forEach((bg) => {
+    // إنشاء الـ 10 استيكرات وتوزيعها في 5 أزواج
+    defaultBgs.forEach((bg, index) => {
         container.innerHTML += `
-            <div class="sticker" style="background: ${bg};">
+            <div class="sticker target-sticker" data-index="${index}" style="background: ${bg};">
                 <div class="content">
                     <div class="avatar-container target-avatar-box">
                         <img class="child-avatar" src="https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=400&q=80" alt="صورة الطفل">
@@ -282,7 +306,6 @@
         document.getElementById('strokeSizeVal').textContent = strokeSizeVal;
         document.getElementById('gradeSizeVal').textContent = gradeSizeVal;
 
-        // إخفاء أو إظهار صندوق الصورة
         document.querySelectorAll('.target-avatar-box').forEach(el => {
             if (showAvatar) {
                 el.style.display = 'block';
@@ -328,6 +351,27 @@
         });
     }
 
+    // دالة لتغيير خلفية كل زوج استيكرات لوحده (كل زر يتحكم في استيكرين معا)
+    function changePairBg(pairIndex, event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const bgUrl = e.target.result;
+                const startIndex = pairIndex * 2;
+                const stickers = document.querySelectorAll('.target-sticker');
+                
+                // تطبيق الخلفية على الاستيكرين المرتبطين بهذا الزوج فقط
+                for (let i = startIndex; i < startIndex + 2 && i < stickers.length; i++) {
+                    stickers[i].style.background = `url("${bgUrl}")`;
+                    stickers[i].style.backgroundSize = 'cover';
+                    stickers[i].style.backgroundPosition = 'center';
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
     document.getElementById('imageUpload').addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
@@ -335,23 +379,6 @@
             reader.onload = function(e) {
                 document.querySelectorAll('.child-avatar').forEach(img => {
                     img.src = e.target.result;
-                });
-            }
-            reader.readAsDataURL(file);
-        }
-    });
-
-    document.getElementById('bgUpload').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const bgUrl = e.target.result;
-                document.querySelectorAll('.sticker').hasBg = true;
-                document.querySelectorAll('.sticker').forEach(sticker => {
-                    sticker.style.background = `url("${bgUrl}")`;
-                    sticker.style.backgroundSize = 'cover';
-                    sticker.style.backgroundPosition = 'center';
                 });
             }
             reader.readAsDataURL(file);
